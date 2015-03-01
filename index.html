@@ -13,6 +13,20 @@
     <!-- <script src="js/_jquery-2.1.3.min.js"></script> -->
     <script src="js/jquery-1.10.2.js"></script>	
 
+    <!-- Calendar -->
+     <!-- ... 
+	<script type="text/javascript" src="bower_components/jquery/jquery.min.js"></script>
+	-->
+	<script type="text/javascript" src="bower_components/moment/min/moment.min.js"></script>
+	<!--
+	<script type="text/javascript" src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+	-->
+	<script type="text/javascript" src="bower_components/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js"></script>
+	<!--
+	<link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css" />
+	-->
+	<link rel="stylesheet" href="bower_components/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css" />
+
     <!-- Bootstrap Core CSS -->
     <link href="css/bootstrap.min.css" rel="stylesheet" type="text/css">
 
@@ -29,6 +43,10 @@
 		var timer;
 
 		var departure = "SFO";
+		var destination = "";
+		var dateDeparture = "";
+		var dateReturn = "";
+		var nameOfAirport = "";
 
 		var key = "94uVzJjmUntv6dXFJ2B6fvufGXhuP6WR";
 
@@ -86,10 +104,28 @@
 
 		$(document).ready(function() {
 			start();
-			$(".search").click(function(){
-				getDepartureAirport($(".departure").val());
+			//$('#datetimepicker1').datetimepicker();
+			$('#dateDeparture').datetimepicker({
+				format: 'YYYY-MM-DD',
+    			extraFormats: [ 'YYYY-MM-DD' ]
+			});			
+			$('#dateReturn').datetimepicker({
+				format: 'YYYY-MM-DD',
+    			extraFormats: [ 'YYYY-MM-DD' ]
 			});
-			$('#datetimepicker1').datetimepicker();
+			$(".apply").click(function(){
+				getAirport();
+			});
+			/*
+			$('#datetimepicker1').datetimepicker({
+                icons: {
+                    time: "fa fa-clock-o",
+                    date: "fa fa-calendar",
+                    up: "fa fa-arrow-up",
+                    down: "fa fa-arrow-down"
+                }
+            });
+			*/
 		})
 
 		function start() {
@@ -145,7 +181,7 @@
 				}).appendTo(res);
 
 				res.click(function(){
-					getFlights(airport);
+					setupFlight(airport, key);
 				});
 
 				desc = jQuery('<div/>', { 
@@ -156,18 +192,19 @@
 			});
 		}
 
-		function getFlights(airport) {
-			
+		function setupFlight(airport, airportName) {
+			$(".advtitle").html(" Get adventure to "+airportName+"!");			
 			$('#myModal').modal('show');
+			destination = airport;
+			nameOfAirport = airportName;
+		}
 
-			return
-
-			// TO DO url
-			var url = "http://terminal2.expedia.com/packages?departureDate=2015-04-20&originAirport=BOS&destinationAirport="+airport+"&returnDate=2015-04-22&regionid=6000479&apikey="+key;
-
-			$.getJSON(url, function( data ) {
-				console.log(data);
-			});
+		function getAirport() {
+			if ( $(".recipientDeparture").val() !== "" ) {
+				getDepartureAirport();
+			} else {
+				alert("Please fill out departure city!");
+			}
 		}
 
 		function getDepartureAirport(str) {
@@ -175,7 +212,17 @@
 			$.getJSON(url, function( data ) {
 				departure = data.sr[0].a;
 				console.log(departure);
+				dateDeparture = $("#dateDeparture").val();
+				dateReturn = $("#dateReturn").val();
+			});
+		}
 
+		function getFlights() {
+			// TO DO url
+			var url = "http://terminal2.expedia.com/packages?departureDate="+dateDeparture+"&originAirport="+departure+"&destinationAirport="+destination+"&returnDate="+dateReturn+"&regionid=6000479&apikey="+key;
+			console.log(url);
+			$.getJSON(url, function( data ) {
+				console.log(data);
 			});
 		}
 
@@ -539,21 +586,29 @@
 	    <div class="modal-content">
 	      <div class="modal-header">
 	        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-	        <h4 class="modal-title" id="myModalLabel">Get adventure!</h4>
+	        <h4 class="modal-title advtitle" id="myModalLabel">Get adventure!</h4>
 	      </div>
 	      <div class="modal-body">
 	        <div class="form-group">
-            	<label for="recipient-departure" class="control-label">City of departure:</label>
-            	<input type="text" class="form-control" id="recipient-departure">
+            	<label for="recipientDeparture" class="control-label">City of departure:</label>
+            	<input type="text" class="form-control" id="recipientDeparture">
+            	<br>
+            	<label for="recipient-departure" class="control-label">Date of departure:</label>
+            	<input type='text' class="form-control" id='dateDeparture' value="2015-03-02" />            	
+            	<br>
+            	<label for="recipient-departure" class="control-label">Date of return:</label>
+            	<input type='text' class="form-control" id='dateReturn' value="2015-03-10" />
+            	<!--
             	<div class='input-group date' id='datetimepicker1'>
                     <input type='text' class="form-control" />
                     <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
                 </span>
+                -->
           	</div>
 	      </div>
 	      <div class="modal-footer">
 	        <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
-	        <button type="button" class="btn btn-primary">Yes!</button>
+	        <button type="button" class="btn btn-primary apply">Yes!</button>
 	      </div>
 	    </div>
 	  </div>
