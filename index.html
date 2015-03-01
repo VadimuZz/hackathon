@@ -89,6 +89,7 @@
 			$(".search").click(function(){
 				getDepartureAirport($(".departure").val());
 			});
+			$('#datetimepicker1').datetimepicker();
 		})
 
 		function start() {
@@ -157,6 +158,10 @@
 
 		function getFlights(airport) {
 			
+			$('#myModal').modal('show');
+
+			return
+
 			// TO DO url
 			var url = "http://terminal2.expedia.com/packages?departureDate=2015-04-20&originAirport=BOS&destinationAirport="+airport+"&returnDate=2015-04-22&regionid=6000479&apikey="+key;
 
@@ -342,6 +347,9 @@
 		</div>
         <div class="row">
             <div class="col-lg-12 cities"></div>
+            <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
+  				Launch demo modal
+			</button>
             <!--
             <div class="col-sm-3 col-md-3">
 				<div class="wow fadeInLeft" data-wow-delay="0.2s">
@@ -399,9 +407,11 @@
         </div>		
 		</div>
 	</section>
+
 	<!-- /Section: services -->
 	
 	<!-- Section: contact -->
+	<!--
     <section id="contact" class="home-section text-center" style="display: none;">
 		<div class="heading-contact">
 			<div class="container">
@@ -503,6 +513,7 @@
 
 		</div>
 	</section>
+	-->
 	<!-- /Section: contact -->
 
 	<footer>
@@ -528,14 +539,21 @@
 	    <div class="modal-content">
 	      <div class="modal-header">
 	        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-	        <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+	        <h4 class="modal-title" id="myModalLabel">Get adventure!</h4>
 	      </div>
 	      <div class="modal-body">
-	        ...
+	        <div class="form-group">
+            	<label for="recipient-departure" class="control-label">City of departure:</label>
+            	<input type="text" class="form-control" id="recipient-departure">
+            	<div class='input-group date' id='datetimepicker1'>
+                    <input type='text' class="form-control" />
+                    <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
+                </span>
+          	</div>
 	      </div>
 	      <div class="modal-footer">
-	        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-	        <button type="button" class="btn btn-primary">Save changes</button>
+	        <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+	        <button type="button" class="btn btn-primary">Yes!</button>
 	      </div>
 	    </div>
 	  </div>
