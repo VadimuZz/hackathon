@@ -118,7 +118,6 @@
 			$(".apply-setup").click(function(){
 				getAirport();
 			});
-			createLoading();
 		})
 
 		function start() {
@@ -225,9 +224,67 @@
 				console.log(data);
 				$(".flights").empty();
 
+				$.each( data.FlightList.Flight.FlightItinerary.FlightLeg, function( key, value ) { 
+					$.each( value.FlightSegment, function( key2, value2 ) { 
+						
+
+						var sp = jQuery('<div/>', { 
+		    				"class": 'ticket',
+						}).appendTo($(".flights"));
+
+						jQuery('<div/>', { text: value2.ArrivalAirportCode }).appendTo( $(sp) );
+						jQuery('<div/>', { text: value2.ArrivalDateTime }).appendTo( $(sp) );
+						jQuery('<div/>', { text: value2.CarrierCode }).appendTo( $(sp) );
+						jQuery('<div/>', { text: value2.DepartureAirportCode }).appendTo( $(sp) );
+						jQuery('<div/>', { text: value2.DepartureDateTime }).appendTo( $(sp) );
+						jQuery('<div/>', { text: value2.ArrivalAirportCode }).appendTo( $(sp) );
+						jQuery('<div/>', { text: value2.FlightDuration }).appendTo( $(sp) );
+						jQuery('<div/>', { text: value2.FlightNumber }).appendTo( $(sp) );
+						jQuery('<div/>', { text: value2.FlightSegmentIndex }).appendTo( $(sp) );
+
+						console.log(value2);
+						console.log(value2.ArrivalAirportCode);
+						console.log(value2.ArrivalDateTime);
+						console.log(value2.CarrierCode);
+						console.log(value2.DepartureAirportCode);
+						console.log(value2.DepartureDateTime);
+						console.log(value2.FlightDuration);
+						console.log(value2.FlightNumber);
+						console.log(value2.FlightSegmentIndex);
+					});
+				});
+
+				
+
+				//"HotelID: "914809"HotelIndex: "1"HotelPrice: ObjectLocation: ObjectName: "Budgetel Inn Glen Ellyn"OverviewThumbnail: "http://media.expedia.com/hotels/1000000/920000/914900/914809/914809_51_t.jpg"RoomRatePlanDescription: "Standard Room, 1 King Bed"RoomsRemaining: "9"StarRating: "1.5"TravelerReviewCount: "165"TravelerReviewRating: "2.0"
+				var counter = 0;
+				$.each( data.HotelList.Hotel, function( key, value ) { 
+					counter += 1;
+
+					if(counter <10) {
+
+						var sp = jQuery('<div/>', { 
+		    				"class": 'hotel',
+						}).appendTo($(".flights"));
+
+						jQuery('<div/>', { text: value.Description }).appendTo( $(sp) );
+						jQuery('<div/>', { text: "$"+value.HotelPrice.TotalRate.Value }).appendTo( $(sp) );
+						jQuery('<div/>', { text: value.Location.City+" "+value.Location.StreetAddress }).appendTo( $(sp) );
+						jQuery('<div/>', { text: value.Name }).appendTo( $(sp) );
+
+						jQuery('<img/>', {
+						    src: value.OverviewThumbnail
+						}).appendTo($(sp));
 
 
+						jQuery('<div/>', { text: value.RoomRatePlanDescription }).appendTo( $(sp) );
+						jQuery('<div/>', { text: value.RoomsRemaining }).appendTo( $(sp) );
+						jQuery('<div/>', { text: value.StarRating }).appendTo( $(sp) );
+						jQuery('<div/>', { text: value.TravelerReviewCount+"/"+value.TravelerReviewRating }).appendTo( $(sp) );
 
+					}
+				});
+	
 				$("html, body").animate({ scrollTop: $('#result').offset().top }, 1000);
 
 			});
@@ -253,7 +310,7 @@
 			}).appendTo(divP);
 
 			var text = jQuery('<div/>', {
-			    text: "Flight to "+nameOfAirport,
+			    text: "Flight to "+nameOfAirport+"...",
 			    "class": "flto"
 			}).appendTo($(".flights"));
 
@@ -273,6 +330,34 @@
 			cursor: pointer;
 			overflow: hidden;
 			position: relative;
+		}
+		.ticket {
+			width: 500px;
+			float: left;
+			text-align: left;
+			background: #d1ffe8;
+			padding: 15px;
+			margin: 20px;
+			-webkit-border-radius: 15px;
+			-moz-border-radius: 15px;
+			border-radius: 15px;'
+			-webkit-box-shadow: 0px 3px 5px 0px rgba(50, 50, 50, 0.75);
+			-moz-box-shadow:    0px 3px 5px 0px rgba(50, 50, 50, 0.75);
+			box-shadow:         0px 3px 5px 0px rgba(50, 50, 50, 0.75);
+		}		
+		.hotel {
+			width: 500px;
+			float: left;
+			text-align: left;
+			background: #d1ecff;
+			padding: 15px;
+			margin: 20px;
+			-webkit-border-radius: 15px;
+			-moz-border-radius: 15px;
+			border-radius: 15px;'
+			-webkit-box-shadow: 0px 3px 5px 0px rgba(50, 50, 50, 0.75);
+			-moz-box-shadow:    0px 3px 5px 0px rgba(50, 50, 50, 0.75);
+			box-shadow:         0px 3px 5px 0px rgba(50, 50, 50, 0.75);
 		}
 		.pre-loader {
 			margin-top: 100px;
