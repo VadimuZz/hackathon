@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<script src="https://cdn.traitify.com/lib/v1.js"></script>
+	<script src="js/jquery-2.1.3.min.js"></script>
+	<script type="text/javascript">
+
+		var id;
+		var created_at;
+		var timer;
+
+		var departure = "SFO";
+
+		var key = "94uVzJjmUntv6dXFJ2B6fvufGXhuP6WR";
+
+		var base = {
+			"Charismatic" : {
+				"Paris" : { "airport" : "CDG", "img" : "Paris.jpg" },
+				"Venice" : { "airport" : "VCE", "img" : "Venice.jpg" },
+				"Carmel CA" : { "airport" : "MRY", "img" : "Carmel.jpg" },
+				"Honolulu" : { "airport" : "MHL", "img" : "Honolulu.jpg" },
+				"Quebec City, Canada" : { "airport" : "YQB", "img" : "Quebec.jpg" },
+			},
+			"Unconventional" : {
+				"Phnom Penh" : { "airport" : "PNH", "img" : "Phnom-penh.jpg" },
+				"Singapore" : { "airport" : "SIN", "img" : "Singapore.jpg" },
+				"Bali" : { "airport" : "DPS", "img" : "Bali.jpg" },
+				"Phuket" : { "airport" : "HKT", "img" : "Phuket.jpg" },
+				"Avila" : { "airport" : "AVJ", "img" : "Avila.jpg" },
+			},
+			"Thoughtful" : {
+				"Lhasa" : { "airport" : "LXA", "img" : "Lhassa.jpg" },
+				"Mumbai" : { "airport" : "BOM", "img" : "Mumbai.jpg" },
+				"Agra" : { "airport" : "DEL", "img" : "Agra.jpg" },
+				"Chania" : { "airport" : "CHQ", "img" : "Chania.jpg" },
+				"Daytona Beach" : { "airport" : "DAB", "img" : "DaytonaBeach.jpg" },
+			},
+			"Adventurous" : {
+				"Tel Aviv" : { "airport" : "TLV", "img" : "Telaviv.jpg" },
+				"Kuala Lumpur" : { "airport" : "KUL", "img" : "Kuala-Lumpur.jpg" },
+				"Las Vegas" : { "airport" : "LAS", "img" : "Las-Vegas.jpg" },
+				"San Francisco" : { "airport" : "SFO", "img" : "San-Francisco.jpg" },
+				"Washington, D.C." : { "airport" : "DCA", "img" : "WashingtonDC.jpg" },
+			},
+			"Rational" : {
+				"Los Angeles" : { "airport" : "LAX", "img" : "Losangeles.jpg" }, 
+				"London" : { "airport" : "LON", "img" : "London.jpg" },
+				"Bangkok" : { "airport" : "BKK", "img" : "Bangkok.jpg" },
+				"Istanbul" : { "airport" : "IST", "img" : "Istanbul.jpg" },
+				"Barcelona" : { "airport" : "BCN", "img" : "Barcelona.jpg" },
+			},
+			"Social" : {
+				"Madrid" : { "airport" : "MAD", "img" : "Madrid.jpg" },
+				"Chengdu" : { "airport" : "CTU", "img" : "Chengdu.jpg" },
+				"Hamburg" : { "airport" : "HAM", "img" : "Hamburg.jpg" },
+				"Helsinki" : { "airport" : "HEL", "img" : "Helsinki.jpg" },
+				"Amsterdam" : { "airport" : "AMS", "img" : "Amsterdam.jpg" },
+			},
+			"Reliable" : { 
+				"Hartford" : { "airport" : "HFD", "img" : "Hartford.jpg" },
+				"Atlanta" : { "airport" : "ATL", "img" : "Atlanta.jpg" },
+				"New York" : { "airport" : "JFK", "img" : "NewYork.jpg" },
+				"Dubai" : { "airport" : "DXB", "img" : "Dubai.jpg" },
+				"Hong Kong" : { "airport" : "HKG", "img" : "HongKong.jpg" },
+			}
+		}
+
+		$(document).ready(function() {
+			start();
+			$(".search").click(function(){
+				getDepartureAirport($(".departure").val());
+			});
+		})
+
+		function start() {
+			$.get( "key.php", function( data ) {
+			  //console.log( "Data Loaded: " + data );
+			  data = data.substring(0, data.length - 1);
+			  var obj = jQuery.parseJSON( data );
+				id = obj.id;
+				created_at = obj.created_at;
+				initInterview("48c3251f-c0c0-492f-9341-9a4b2d58b476");//id);
+			});
+		}
+
+		function initInterview(id) {
+			Traitify.setPublicKey("a9tub40p04d1bjg3mi0kq7qamp");
+			Traitify.setHost("https://api-sandbox.traitify.com");
+			Traitify.setVersion("v1");
+			var assessmentId = id;
+			Traitify.ui.load(assessmentId, ".assessment");
+			timer = setInterval(detectEnd, 1000);
+		}
+
+		function detectEnd() {
+			if($(".personality-type").length >= 1) {
+				clearInterval(timer);
+				var counter = 0;
+				$.each( $(".personality-type"), function( key, value ) {
+					if (counter <= 1) {  
+					  console.log( $(value).find(".name").text() + " "+ $(value).find(".score").text());
+					  showDirections(base[ $(value).find(".name").text() ]);
+						counter += 1;
+					};
+				});
+			}
+		}
+
+		function showDirections(obj, city) {
+			$.each( obj, function( key, value ) {
+				var img = value.img;
+				var airport = value.airport;
+
+				res = jQuery('<div/>', {
+				    id: 'foo',
+				    //text: 'Go to Google! '+key,
+				    style: "background-image: url(img/"+img+")"
+				}).appendTo('.cities');
+				res.addClass("direction");
+				res.attr("airport", airport);
+
+				res.click(function(){
+					getFlights(airport);
+				});
+
+				desc = jQuery('<div/>', { 
+			    "class": 'desc',
+			    text: key,
+				}).appendTo(res);
+
+			});
+		}
+
+		function getFlights(airport) {
+			
+			// TO DO url
+			var url = "http://terminal2.expedia.com/packages?departureDate=2015-04-20&originAirport=BOS&destinationAirport="+airport+"&returnDate=2015-04-22&regionid=6000479&apikey="+key;
+
+			$.getJSON(url, function( data ) {
+				console.log(data);
+			});
+		}
+
+		function getDepartureAirport(str) {
+			var url = "http://terminal2.expedia.com/suggestions/flights?query="+str+"&maxresults=10&apikey="+key;
+			$.getJSON(url, function( data ) {
+				departure = data.sr[0].a;
+				console.log(departure);
+
+			});
+		}
+
+	</script>
+	<style type="text/css">
+		body {
+			width: 100%;
+			height: 100%;
+			padding: 0px;
+			margin: 0px;
+			font-family: Verdana;
+		}
+		.direction {
+			width: 400px;
+			height: 200px;
+			float: left;
+			margin: 20px;
+			background-size: cover;
+			cursor: pointer;
+		}
+		.desc {
+			padding: 15px;
+			color: #FFF;
+			background-image: url("i/70.png")
+		}
+	</style>
+
+</head>
+<body>
+	<div>
+		<input class="departure" type="text" value="" />
+		<input class="search" type="button" value="Search" />
+	</div>
+	<div class="assessment"></div>
+	<div class="cities"></div>
+</body>
+</html>
