@@ -224,41 +224,54 @@
 				console.log(data);
 				$(".flights").empty();
 
-				$.each( data.FlightList.Flight.FlightItinerary.FlightLeg, function( key, value ) { 
-					$.each( value.FlightSegment, function( key2, value2 ) { 
-						
+				
+				//$.each( data.FlightList.Flight.FlightItinerary.FlightLeg, function( key, value ) { 
+					
+				//	drawFligth( value.FlightSegment );
+					
+				//});
 
-						var sp = jQuery('<div/>', { 
-		    				"class": 'ticket',
-						}).appendTo($(".flights"));
+				/**/
 
-						jQuery('<div/>', { text: value2.ArrivalAirportCode }).appendTo( $(sp) );
-						jQuery('<div/>', { text: value2.ArrivalDateTime }).appendTo( $(sp) );
-						jQuery('<div/>', { text: value2.CarrierCode }).appendTo( $(sp) );
-						jQuery('<div/>', { text: value2.DepartureAirportCode }).appendTo( $(sp) );
-						jQuery('<div/>', { text: value2.DepartureDateTime }).appendTo( $(sp) );
-						jQuery('<div/>', { text: value2.ArrivalAirportCode }).appendTo( $(sp) );
-						jQuery('<div/>', { text: value2.FlightDuration }).appendTo( $(sp) );
-						jQuery('<div/>', { text: value2.FlightNumber }).appendTo( $(sp) );
-						jQuery('<div/>', { text: value2.FlightSegmentIndex }).appendTo( $(sp) );
 
-						console.log(value2);
-						console.log(value2.ArrivalAirportCode);
-						console.log(value2.ArrivalDateTime);
-						console.log(value2.CarrierCode);
-						console.log(value2.DepartureAirportCode);
-						console.log(value2.DepartureDateTime);
-						console.log(value2.FlightDuration);
-						console.log(value2.FlightNumber);
-						console.log(value2.FlightSegmentIndex);
+				//: ObjectBrandedDealsType: Array[2]0: "FreeOneNightHotel"1: "HotelSavingsFreeNights"length: 2__proto__: Array[0]__proto__: 
+				//ObjectDetailsUrl: "http://www.expedia.com/pubspec/scripts/eap.asp?GOTO=UDP&piid=d9a102e8-5b37-4796-a569-5da3defab9ab-0&nRooms=1&nAdults=R1:2&destinationId=6000479&departTLA=L1:BOS|L2:LAS&arrivalTLA=L1:LAS|L2:BOS&departDate=L1:2015-03-02|L2:2015-03-10&sort=price&tripType=roundtrip&productType=package&serviceVersion=3&price=1199.2&currencyCode=USD"
+				//FlightReferenceIndex: "1"
+				//HotelReferenceIndex: "1"
+				//PackagePrice: ObjectTotalPrice: ObjectCurrency: "USD"Value: "1199.20"__proto__: ObjectTotalSavings: ObjectCurrency: "USD"Value: "145.60"
+
+				/*
+				$.each( data.PackageSearchResultList.PackageSearchResult, function( keyH, valueH ) { 
+
+					var sp = jQuery('<div/>', { 
+		    			"class": 'ticket',
+					}).appendTo($(".flights"));
+
+					if (valueH.BrandedDealsMarker) {
+						for (variable in valueH.BrandedDealsMarker.BrandedDealsType) {
+							jQuery('<div/>', { text: valueH.BrandedDealsMarker.BrandedDealsType[variable] }).appendTo( $(sp) );
+						}
+					}
+					//jQuery('<div/>', { text: valueH.DetailsUrl }).appendTo( $(sp) );
+					//jQuery('<div/>', { text: valueH.FlightReferenceIndex }).appendTo( $(sp) );
+					//jQuery('<div/>', { text: valueH.HotelReferenceIndex }).appendTo( $(sp) );
+					jQuery('<div/>', { text: "Total savings: "+ valueH.PackagePrice.TotalSavings.Value }).appendTo( $(sp) );
+
+					var resBtn = jQuery('<button/>', { 
+						type: "button",  
+						"class": "btn btn-primary btn-lg get-hotel",
+						text: "Get "+"$"+valueH.PackagePrice.TotalPrice.Value
+					}).appendTo( $(sp) );
+					$(resBtn).click(function(){
+
 					});
 				});
-
-				
+				*/
 
 				//"HotelID: "914809"HotelIndex: "1"HotelPrice: ObjectLocation: ObjectName: "Budgetel Inn Glen Ellyn"OverviewThumbnail: "http://media.expedia.com/hotels/1000000/920000/914900/914809/914809_51_t.jpg"RoomRatePlanDescription: "Standard Room, 1 King Bed"RoomsRemaining: "9"StarRating: "1.5"TravelerReviewCount: "165"TravelerReviewRating: "2.0"
+				
 				var counter = 0;
-				$.each( data.HotelList.Hotel, function( key, value ) { 
+				$.each( data.HotelList.Hotel, function( keyH, valueH ) { 
 					counter += 1;
 
 					if(counter <10) {
@@ -267,26 +280,90 @@
 		    				"class": 'hotel',
 						}).appendTo($(".flights"));
 
-						jQuery('<div/>', { text: value.Description }).appendTo( $(sp) );
-						jQuery('<div/>', { text: "$"+value.HotelPrice.TotalRate.Value }).appendTo( $(sp) );
-						jQuery('<div/>', { text: value.Location.City+" "+value.Location.StreetAddress }).appendTo( $(sp) );
-						jQuery('<div/>', { text: value.Name }).appendTo( $(sp) );
 
 						jQuery('<img/>', {
-						    src: value.OverviewThumbnail
+							"class": "hotel-img",
+						    src: valueH.OverviewThumbnail
 						}).appendTo($(sp));
 
 
-						jQuery('<div/>', { text: value.RoomRatePlanDescription }).appendTo( $(sp) );
-						jQuery('<div/>', { text: value.RoomsRemaining }).appendTo( $(sp) );
-						jQuery('<div/>', { text: value.StarRating }).appendTo( $(sp) );
-						jQuery('<div/>', { text: value.TravelerReviewCount+"/"+value.TravelerReviewRating }).appendTo( $(sp) );
+						jQuery('<h2/>', { text: "Flight plus hotel deal" }).appendTo( $(sp) );
+						jQuery('<div/>', { text: valueH.Description }).appendTo( $(sp) );
+						//jQuery('<div/>', { text: "$"+value.HotelPrice.TotalRate.Value }).appendTo( $(sp) );
+						jQuery('<div/>', { text: valueH.Location.City+" "+valueH.Location.StreetAddress }).appendTo( $(sp) );
+						jQuery('<div/>', { text: valueH.Name }).appendTo( $(sp) );
 
+						jQuery('<div/>', { text: valueH.RoomRatePlanDescription }).appendTo( $(sp) );
+						jQuery('<div/>', { text: valueH.RoomsRemaining }).appendTo( $(sp) );
+						jQuery('<div/>', { text: valueH.StarRating }).appendTo( $(sp) );
+						jQuery('<div/>', { text: valueH.TravelerReviewCount+"/"+valueH.TravelerReviewRating }).appendTo( $(sp) );
+						
+						//jQuery('<button/>', { 
+						//	type: "button",  
+						//	"class": "btn btn-primary btn-lg get-hotel",
+						//	text: "Get "+"$"+valueH.HotelPrice.TotalRate.Value
+						//}).appendTo( $(sp) );
+
+						var ti = jQuery('<div/>', { 
+		    				"class": 'ticket',
+						}).appendTo($(sp));
+
+						var valueH = data.PackageSearchResultList.PackageSearchResult[keyH];
+				
+						var resBtn = jQuery('<button/>', { 
+							type: "button",  
+							"class": "btn btn-primary btn-lg get-hotel",
+							text: "Get "+"$"+valueH.PackagePrice.TotalPrice.Value
+						}).appendTo( $(ti) );
+
+						if (valueH.BrandedDealsMarker) {
+							if(valueH.BrandedDealsMarker.BrandedDealsType) {
+								for (variable in valueH.BrandedDealsMarker.BrandedDealsType) {
+									jQuery('<div/>', { text: valueH.BrandedDealsMarker.BrandedDealsType[variable] }).appendTo( $(ti) );
+								}
+							}
+						}
+						//jQuery('<div/>', { text: valueH.DetailsUrl }).appendTo( $(sp) );
+						//jQuery('<div/>', { text: valueH.FlightReferenceIndex }).appendTo( $(sp) );
+						//jQuery('<div/>', { text: valueH.HotelReferenceIndex }).appendTo( $(sp) );
+						jQuery('<div/>', { text: "Total savings: "+ valueH.PackagePrice.TotalSavings.Value }).appendTo( $(ti) );
+
+						$(resBtn).click(function(){
+							window.open(valueH.DetailsUrl, '_blank');
+						});
 					}
 				});
+				/**/
 	
 				$("html, body").animate({ scrollTop: $('#result').offset().top }, 1000);
 
+			});
+		}
+
+		function drawFligth(obj) {
+			console.log(obj);
+
+			var sp = jQuery('<div/>', { 
+    				"class": 'ticket',
+			}).appendTo($(".flights"));
+
+			$.each(obj , function( key2, value2 ) { 
+				
+				//ArrivalAirportCode: "LAS"ArrivalDateTime: "2015-03-03T11:02:00"CarrierCode: "B6"DepartureAirportCode: "SFO"DepartureDateTime: "2015-03-03T09:25:00"FlightDuration: "PT1H37M"FlightNumber: "888"FlightSegmentIndex: "1"
+
+
+				jQuery('<div/>', { text: value2 }).appendTo( $(sp) );
+				
+
+				//console.log(value2);
+				
+				//console.log(value2.ArrivalDateTime);
+				//console.log(value2.CarrierCode);
+				//console.log(value2.DepartureAirportCode);
+				//console.log(value2.DepartureDateTime);
+				//console.log(value2.FlightDuration);
+				//console.log(value2.FlightNumber);
+				//console.log(value2.FlightSegmentIndex);
 			});
 		}
 
@@ -321,6 +398,12 @@
 
 	</script>
 	<style type="text/css">
+		.hotel-img {
+			float: right;
+		}
+		.get-hotel {
+			float: right;
+		}
 		.direction {
 			width: 400px;
 			height: 200px;
@@ -332,18 +415,15 @@
 			position: relative;
 		}
 		.ticket {
-			width: 500px;
-			float: left;
+			width: 100%;
 			text-align: left;
 			background: #d1ffe8;
 			padding: 15px;
-			margin: 20px;
+			margin-top: 20px;
 			-webkit-border-radius: 15px;
 			-moz-border-radius: 15px;
-			border-radius: 15px;'
-			-webkit-box-shadow: 0px 3px 5px 0px rgba(50, 50, 50, 0.75);
-			-moz-box-shadow:    0px 3px 5px 0px rgba(50, 50, 50, 0.75);
-			box-shadow:         0px 3px 5px 0px rgba(50, 50, 50, 0.75);
+			border-radius: 15px;
+			min-height: 75px;
 		}		
 		.hotel {
 			width: 500px;
