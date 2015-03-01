@@ -36,6 +36,8 @@
     <!-- Squad theme CSS -->
     <link href="css/style.css" rel="stylesheet">
 	<link href="color/default.css" rel="stylesheet">
+	<link href="css/preloader.css" rel="stylesheet">
+
 	<script type="text/javascript">
 
 		var id;
@@ -113,19 +115,10 @@
 				format: 'YYYY-MM-DD',
     			extraFormats: [ 'YYYY-MM-DD' ]
 			});
-			$(".apply").click(function(){
+			$(".apply-setup").click(function(){
 				getAirport();
 			});
-			/*
-			$('#datetimepicker1').datetimepicker({
-                icons: {
-                    time: "fa fa-clock-o",
-                    date: "fa fa-calendar",
-                    up: "fa fa-arrow-up",
-                    down: "fa fa-arrow-down"
-                }
-            });
-			*/
+			createLoading();
 		})
 
 		function start() {
@@ -168,7 +161,7 @@
 				var img = value.img;
 				var airport = value.airport;
 
-				res = jQuery('<div/>', {
+				var res = jQuery('<div/>', {
 				    id: 'foo',
 				    //text: 'Go to Google! '+key,
 				    //style: "background-image: url(img-cities/"+img+")"
@@ -176,7 +169,7 @@
 				res.addClass("direction");
 				res.attr("airport", airport);				
 
-				img = jQuery('<img/>', {
+				var img = jQuery('<img/>', {
 				    src: "img-cities/"+img
 				}).appendTo(res);
 
@@ -184,7 +177,7 @@
 					setupFlight(airport, key);
 				});
 
-				desc = jQuery('<div/>', { 
+				var desc = jQuery('<div/>', { 
 			    "class": 'desc',
 			    text: key,
 				}).appendTo(res);
@@ -200,30 +193,73 @@
 		}
 
 		function getAirport() {
-			if ( $(".recipientDeparture").val() !== "" ) {
+			console.log("ar "+$("#recipientDeparture").val());
+			if ( $("#recipientDeparture").val() !== "" ) {
 				getDepartureAirport();
 			} else {
 				alert("Please fill out departure city!");
 			}
 		}
 
-		function getDepartureAirport(str) {
-			var url = "http://terminal2.expedia.com/suggestions/flights?query="+str+"&maxresults=10&apikey="+key;
+		function getDepartureAirport() {
+			var url = "http://terminal2.expedia.com/suggestions/flights?query="+$("#recipientDeparture").val()+"&maxresults=10&apikey="+key;
 			$.getJSON(url, function( data ) {
 				departure = data.sr[0].a;
 				console.log(departure);
 				dateDeparture = $("#dateDeparture").val();
 				dateReturn = $("#dateReturn").val();
+				getFlights(departure, destination, dateDeparture, dateReturn);
 			});
 		}
 
-		function getFlights() {
+		function getFlights(departure, destination, dateDeparture, dateReturn) {
 			// TO DO url
 			var url = "http://terminal2.expedia.com/packages?departureDate="+dateDeparture+"&originAirport="+departure+"&destinationAirport="+destination+"&returnDate="+dateReturn+"&regionid=6000479&apikey="+key;
 			console.log(url);
+
+			createLoading();
+			$('#myModal').modal('hide');
+			$("html, body").animate({ scrollTop: $('#result').offset().top }, 1000);
+
 			$.getJSON(url, function( data ) {
 				console.log(data);
+				$(".flights").empty();
+
+
+
+
+				$("html, body").animate({ scrollTop: $('#result').offset().top }, 1000);
+
 			});
+		}
+
+		function createLoading() {
+			$(".flights").empty();
+			var sp = jQuery('<div/>', { 
+		    "class": 'pre-loader',
+		    "align": "center"
+			}).appendTo($(".flights"));
+
+			//var img = jQuery('<img/>', {
+			//    src: "img/sp.gif"
+			//}).appendTo(sp);
+
+			var divP = jQuery('<div/>', {
+			    id: "loader-wrapper"
+			}).appendTo(sp);
+
+			var divL = jQuery('<div/>', {
+			    id: "loader"
+			}).appendTo(divP);
+
+			var text = jQuery('<div/>', {
+			    text: "Flight to "+nameOfAirport,
+			    "class": "flto"
+			}).appendTo($(".flights"));
+
+			//<div id="loader-wrapper">
+			//    <div id="loader"></div>
+			//</div>
 		}
 
 	</script>
@@ -237,6 +273,13 @@
 			cursor: pointer;
 			overflow: hidden;
 			position: relative;
+		}
+		.pre-loader {
+			margin-top: 100px;
+		}
+		.flto {
+			font-size: 20px;
+			padding: 15px;
 		}
 		.desc {
 			padding: 15px;
@@ -274,9 +317,7 @@
 		    -webkit-transform: scale(1.3,1.3);
 		    transform: scale(1.3,1.3);
 		}
-		#service {
-			display: none;
-		}
+
 	</style>
 </head>
 
@@ -394,9 +435,15 @@
 		</div>
         <div class="row">
             <div class="col-lg-12 cities"></div>
-            <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
+            
+            <br>
+            <div id="result" class="col-lg-12 flights"></div>
+           
+
+            <!--<button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
   				Launch demo modal
 			</button>
+			-->
             <!--
             <div class="col-sm-3 col-md-3">
 				<div class="wow fadeInLeft" data-wow-delay="0.2s">
@@ -608,7 +655,7 @@
 	      </div>
 	      <div class="modal-footer">
 	        <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
-	        <button type="button" class="btn btn-primary apply">Yes!</button>
+	        <button type="button" class="btn btn-primary apply-setup">Yes!</button>
 	      </div>
 	    </div>
 	  </div>
